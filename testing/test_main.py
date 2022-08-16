@@ -12,18 +12,21 @@ import unittest
 from main import *
 
 class helper : 
-     def check_random_walk( start, n, p ) :
-         fpos = random_walk( start, n, p ) 
-         return (n+fpos-start) / 2
+     def __init__( self, n, s ) :
+         self.n, self.s = n, s
+
+     def check_random_walk( self, val ) :
+         return (self.n + val - self.s) / 2
 
 class UnitTests(unittest.TestCase) :
     def test_random_walk(self) : 
-        inputs, variables = [], []
-        for s in range(-2,2) : 
-            for n in range(1,5) :
+        inputs, variables, helpers = [], [], []
+        for s in range(-1,2) : 
+            for n in range(2,4) :
                 for i in range(1,5) :
                     p = i*0.2
                     inputs.append((s,n,p,))
-                    myvar = randomvar( n*p, variance=n*p*(1-p), vmin=0, vmax=n, isinteger=True )
+                    helpers.append( helper(n,s) )
+                    myvar = randomvar( n*p, variance=n*p*(1-p), vmin=0, vmax=n, transform=helpers[len(helpers)-1].check_random_walk, isinteger=True )
                     variables.append( myvar )
-        assert( check_func('check_random_walk',inputs, variables, modname=helper ) )
+        assert( check_func('random_walk',inputs, variables ) )
